@@ -10,7 +10,7 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 20-Nov-16
  */
-public final class ConcurrentCyclicBuffer<T> implements Queue<T> {
+public final class ConcurrentRingBuffer<T> implements Queue<T> {
 
     private final AtomicInteger headIndex;
     private final AtomicInteger tailIndex;
@@ -19,7 +19,7 @@ public final class ConcurrentCyclicBuffer<T> implements Queue<T> {
     private final T[] buffer;
     private final int bufferSize;
 
-    public ConcurrentCyclicBuffer(int capacity) {
+    public ConcurrentRingBuffer(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
@@ -34,15 +34,15 @@ public final class ConcurrentCyclicBuffer<T> implements Queue<T> {
     @Override
     public void add(T value) {
         final int index = headIndex.getAndUpdate(this::incrementHead);
-        buffer[index] = value;
         capacity.incrementAndGet();
+        buffer[index] = value;
     }
 
     @Override
     public T pool() {
         final int index = tailIndex.updateAndGet(this::incrementTail);
-        final T value = buffer[index];
         capacity.decrementAndGet();
+        final T value = buffer[index];
         buffer[index] = null;
         return value;
     }
@@ -54,8 +54,8 @@ public final class ConcurrentCyclicBuffer<T> implements Queue<T> {
     }
 
     private int incrementTail(int tail) {
-        int next = index(tail + 1);
         int head = headIndex.get();
+        int next = index(tail + 1);
         checkTailIndex(head, next);
         return next;
     }

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alexey Zhytnik
  * @since 20-Nov-16
  */
-public class DynamicCyclicBufferTest extends DefaultBufferTest {
+public class DynamicRingBufferTest extends DefaultRingBufferTest {
 
     @Test
     public void changesSize() {
@@ -46,6 +46,6 @@ public class DynamicCyclicBufferTest extends DefaultBufferTest {
     }
 
     Queue<Integer> getBuffer(int size) {
-        return new DynamicCyclicBuffer<>(size);
+        return new DynamicRingBuffer<>(size);
     }
 }

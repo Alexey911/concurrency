@@ -12,7 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  * @author Alexey Zhytnik
  * @since 21-Nov-16
  */
-abstract class DefaultBufferTest {
+abstract class DefaultRingBufferTest {
 
     int size = 3;
 

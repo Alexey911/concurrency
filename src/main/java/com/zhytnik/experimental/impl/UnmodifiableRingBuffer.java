@@ -10,17 +10,17 @@ import static java.lang.String.format;
  * @since 21-Nov-16
  */
 @SuppressWarnings("Duplicates")
-public final class UnmodifictableCyclicBuffer<T> implements Queue<T> {
+public final class UnmodifiableRingBuffer<T> implements Queue<T> {
 
-    protected int headIndex;
-    protected int tailIndex;
+    private int headIndex;
+    private int tailIndex;
 
-    protected int capacity;
+    private int capacity;
 
     private final T[] buffer;
     private final int mask;
 
-    public UnmodifictableCyclicBuffer(int capacity) {
+    public UnmodifiableRingBuffer(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
@@ -37,7 +37,7 @@ public final class UnmodifictableCyclicBuffer<T> implements Queue<T> {
     @Override
     public void add(T value) {
         final int index = headIndex;
-        checkHeadIndex();
+        checkHeadIndex(index);
         headIndex = index(index + 1);
 
         buffer[index] = value;
@@ -50,9 +50,9 @@ public final class UnmodifictableCyclicBuffer<T> implements Queue<T> {
         checkTailIndex(index);
         tailIndex = index;
 
-        final T value = buffer[tailIndex];
+        final T value = buffer[index];
+        buffer[index] = null;
         --capacity;
-        buffer[tailIndex] = null;
         return value;
     }
 
@@ -76,8 +76,8 @@ public final class UnmodifictableCyclicBuffer<T> implements Queue<T> {
         return headIndex == tailIndex;
     }
 
-    private void checkHeadIndex() {
-        if (isFull()) {
+    private void checkHeadIndex(int head) {
+        if (head == tailIndex) {
             throw new RuntimeException("Overflow, there's no place!");
         }
     }

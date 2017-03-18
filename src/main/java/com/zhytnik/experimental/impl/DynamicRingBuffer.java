@@ -6,11 +6,11 @@ import static java.lang.System.arraycopy;
  * @author Alexey Zhytnik
  * @since 20-Nov-16
  */
-public final class DynamicCyclicBuffer<T> extends CyclicBuffer<T> {
+public final class DynamicRingBuffer<T> extends RingBuffer<T> {
 
     private final int minTrimCapacity;
 
-    public DynamicCyclicBuffer(int capacity) {
+    public DynamicRingBuffer(int capacity) {
         super(capacity);
         minTrimCapacity = capacity;
     }

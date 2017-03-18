@@ -7,7 +7,7 @@ import org.junit.Test;
  * @author Alexey Zhytnik
  * @since 14-Nov-16
  */
-public class CyclicBufferTest extends DefaultBufferTest {
+public class RingBufferTest extends DefaultRingBufferTest {
 
     @Test(expected = RuntimeException.class)
     public void checksFullState() {
@@ -15,6 +15,6 @@ public class CyclicBufferTest extends DefaultBufferTest {
     }
 
     Queue<Integer> getBuffer(int size) {
-        return new CyclicBuffer<>(size);
+        return new ConcurrentRingBuffer<>(size);
     }
 }

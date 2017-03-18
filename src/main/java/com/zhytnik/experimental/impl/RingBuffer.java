@@ -8,7 +8,7 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 14-Nov-16
  */
-public class CyclicBuffer<T> implements Queue<T> {
+public class RingBuffer<T> implements Queue<T> {
 
     protected int headIndex;
     protected int tailIndex;
@@ -18,7 +18,7 @@ public class CyclicBuffer<T> implements Queue<T> {
     protected T[] buffer;
     protected int bufferSize;
 
-    public CyclicBuffer(int capacity) {
+    public RingBuffer(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
