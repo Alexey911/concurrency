@@ -23,8 +23,9 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
-        this.tailIndex = new AtomicInteger(0);
-        this.headIndex = new AtomicInteger(1);
+        this.headIndex = new AtomicInteger(0);
+        this.tailIndex = new AtomicInteger(1);
+
         this.capacity = new AtomicInteger(0);
 
         this.buffer = createBuffer(capacity + 1);
@@ -33,30 +34,30 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     @Override
     public void add(T value) {
-        final int index = headIndex.getAndUpdate(this::incrementHead);
+        final int index = tailIndex.getAndUpdate(this::incrementTail);
         capacity.incrementAndGet();
         buffer[index] = value;
     }
 
     @Override
     public T pool() {
-        final int index = tailIndex.updateAndGet(this::incrementTail);
+        final int index = headIndex.updateAndGet(this::incrementHead);
         capacity.decrementAndGet();
         final T value = buffer[index];
         buffer[index] = null;
         return value;
     }
 
-    private int incrementHead(int head) {
-        int tail = tailIndex.get();
-        checkHeadIndex(head, tail);
-        return index(head + 1);
-    }
-
     private int incrementTail(int tail) {
         int head = headIndex.get();
-        int next = index(tail + 1);
-        checkTailIndex(head, next);
+        checkHeadIndex(tail, head);
+        return index(tail + 1);
+    }
+
+    private int incrementHead(int head) {
+        int tail = tailIndex.get();
+        int next = index(head + 1);
+        checkTailIndex(tail, next);
         return next;
     }
 
@@ -77,7 +78,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     @Override
     public boolean isFull() {
-        return headIndex.get() == tailIndex.get();
+        return tailIndex.get() == headIndex.get();
     }
 
     private void checkHeadIndex(int head, int tail) {
