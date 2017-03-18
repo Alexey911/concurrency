@@ -50,14 +50,14 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     private int incrementTail(int tail) {
         int head = headIndex.get();
-        checkHeadIndex(tail, head);
+        checkTailIndex(tail, head);
         return index(tail + 1);
     }
 
     private int incrementHead(int head) {
         int tail = tailIndex.get();
         int next = index(head + 1);
-        checkTailIndex(tail, next);
+        checkHeadIndex(tail, next);
         return next;
     }
 
@@ -81,13 +81,13 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
         return tailIndex.get() == headIndex.get();
     }
 
-    private void checkHeadIndex(int head, int tail) {
+    private void checkTailIndex(int head, int tail) {
         if (head == tail) {
             throw new RuntimeException("Overflow, there's no place!");
         }
     }
 
-    private void checkTailIndex(int head, int nextTail) {
+    private void checkHeadIndex(int head, int nextTail) {
         if (nextTail == head) {
             throw new RuntimeException("Buffer is empty!");
         }
