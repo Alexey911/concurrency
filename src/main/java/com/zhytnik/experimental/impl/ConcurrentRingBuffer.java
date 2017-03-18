@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,7 +10,7 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 20-Nov-16
  */
-public final class ConcurrentRingBuffer<T> implements Queue<T> {
+public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     private final AtomicInteger headIndex;
     private final AtomicInteger tailIndex;

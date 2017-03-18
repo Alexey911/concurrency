@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +45,7 @@ public class DynamicRingBufferTest extends DefaultRingBufferTest {
         assertThat(buffer.pool()).isEqualTo(9);
     }
 
-    Queue<Integer> getBuffer(int size) {
+    Buffer<Integer> getBuffer(int size) {
         return new DynamicRingBuffer<>(size);
     }
 }

@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 import org.junit.Test;
 
 import java.security.SecureRandom;
@@ -16,7 +16,7 @@ abstract class DefaultRingBufferTest {
 
     int size = 3;
 
-    Queue<Integer> buffer = getBuffer(size);
+    Buffer<Integer> buffer = getBuffer(size);
 
     @Test
     public void adds() {
@@ -136,7 +136,7 @@ abstract class DefaultRingBufferTest {
         assertThat(buffer.isFull()).isFalse();
     }
 
-    abstract Queue<Integer> getBuffer(int size);
+    abstract Buffer<Integer> getBuffer(int size);
 
     void fillByCount(int count) {
         for (int i = 0; i < count; i++) buffer.add(i + 1);

@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 import org.junit.Test;
 
 /**
@@ -14,7 +14,7 @@ public class RingBufferTest extends DefaultRingBufferTest {
         fillByCount(size + 1);
     }
 
-    Queue<Integer> getBuffer(int size) {
+    Buffer<Integer> getBuffer(int size) {
         return new ConcurrentRingBuffer<>(size);
     }
 }

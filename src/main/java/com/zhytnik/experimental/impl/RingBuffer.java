@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 
 import static java.lang.String.format;
 
@@ -8,7 +8,7 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 14-Nov-16
  */
-public class RingBuffer<T> implements Queue<T> {
+public class RingBuffer<T> implements Buffer<T> {
 
     protected int headIndex;
     protected int tailIndex;

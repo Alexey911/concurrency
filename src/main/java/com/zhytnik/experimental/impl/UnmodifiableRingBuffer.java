@@ -1,6 +1,6 @@
 package com.zhytnik.experimental.impl;
 
-import com.zhytnik.experimental.Queue;
+import com.zhytnik.experimental.Buffer;
 
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.lang.String.format;
@@ -10,7 +10,7 @@ import static java.lang.String.format;
  * @since 21-Nov-16
  */
 @SuppressWarnings("Duplicates")
-public final class UnmodifiableRingBuffer<T> implements Queue<T> {
+public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     private int headIndex;
     private int tailIndex;
