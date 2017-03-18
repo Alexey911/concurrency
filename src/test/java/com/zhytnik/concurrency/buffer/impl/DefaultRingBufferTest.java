@@ -1,6 +1,6 @@
-package com.zhytnik.experimental.impl;
+package com.zhytnik.concurrency.buffer.impl;
 
-import com.zhytnik.experimental.Buffer;
+import com.zhytnik.concurrency.buffer.Buffer;
 import org.junit.Test;
 
 import java.security.SecureRandom;

@@ -1,4 +1,4 @@
-package com.zhytnik.experimental;
+package com.zhytnik.concurrency.buffer;
 
 /**
  * @author Alexey Zhytnik

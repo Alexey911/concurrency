@@ -1,43 +1,44 @@
-package com.zhytnik.experimental.impl;
+package com.zhytnik.concurrency.buffer.impl;
 
-import com.zhytnik.experimental.Buffer;
+import com.zhytnik.concurrency.buffer.Buffer;
 
-import static java.lang.Integer.numberOfLeadingZeros;
 import static java.lang.String.format;
 
 /**
  * @author Alexey Zhytnik
- * @since 21-Nov-16
+ * @since 14-Nov-16
  */
-@SuppressWarnings("Duplicates")
-public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
+public class RingBuffer<T> implements Buffer<T> {
 
-    private int headIndex;
-    private int tailIndex;
+    protected int headIndex;
+    protected int tailIndex;
 
-    private int capacity;
+    protected int capacity;
 
-    private final T[] buffer;
-    private final int mask;
+    protected T[] buffer;
+    protected int bufferSize;
 
-    public UnmodifiableRingBuffer(int capacity) {
+    public RingBuffer(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
+        setUpByOccupancy(createBuffer(capacity + 1), 0);
+    }
 
-        this.capacity = 0;
+    protected void setUpByOccupancy(T[] buffer, int count) {
         this.tailIndex = 0;
-        this.headIndex = 1;
+        this.headIndex = count + 1;
 
-        final int size = getBufferSize(capacity + 1);
-        this.mask = size - 1;
-        this.buffer = createBuffer(size);
+        this.capacity = count;
+
+        this.bufferSize = buffer.length;
+        this.buffer = buffer;
     }
 
     @Override
     public void add(T value) {
+        checkHeadIndex();
         final int index = headIndex;
-        checkHeadIndex(index);
         headIndex = index(index + 1);
 
         buffer[index] = value;
@@ -63,7 +64,7 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     @Override
     public int getSize() {
-        return mask + 1;
+        return bufferSize - 1;
     }
 
     @Override
@@ -76,8 +77,8 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
         return headIndex == tailIndex;
     }
 
-    private void checkHeadIndex(int head) {
-        if (head == tailIndex) {
+    private void checkHeadIndex() {
+        if (isFull()) {
             throw new RuntimeException("Overflow, there's no place!");
         }
     }
@@ -89,17 +90,12 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
     }
 
     private int index(int index) {
-        return index & mask;
+        return index % bufferSize;
     }
 
     @SuppressWarnings("unchecked")
     protected T[] createBuffer(int size) {
         return (T[]) new Object[size];
-    }
-
-    private int getBufferSize(int size) {
-        final int max = 2 * size - 1;
-        return 1 << (31 - numberOfLeadingZeros(max));
     }
 
     @Override

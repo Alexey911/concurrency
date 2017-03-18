@@ -1,4 +1,4 @@
-package com.zhytnik.experimental.impl;
+package com.zhytnik.concurrency.buffer.impl;
 
 import static java.lang.System.arraycopy;
 
