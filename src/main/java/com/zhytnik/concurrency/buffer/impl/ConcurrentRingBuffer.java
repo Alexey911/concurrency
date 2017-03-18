@@ -108,8 +108,6 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     @Override
     public String toString() {
-        return format("Buffer[capacity=%d, size=%d, empty=%s, full=%s]",
-                getCapacity(), getSize(), isEmpty(), isFull()
-        );
+        return format("Buffer[capacity=%d, size=%d]", getCapacity(), getSize());
     }
 }
