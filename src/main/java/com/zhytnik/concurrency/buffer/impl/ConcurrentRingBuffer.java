@@ -24,7 +24,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     public ConcurrentRingBuffer(int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
+            throw new IllegalArgumentException();
         }
 
         this.headIndex = new AtomicInteger(0);

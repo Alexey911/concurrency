@@ -24,7 +24,7 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     public UnmodifiableRingBuffer(int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
+            throw new IllegalArgumentException();
         }
 
         this.capacity = 0;

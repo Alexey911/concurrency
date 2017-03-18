@@ -22,7 +22,7 @@ public class RingBuffer<T> implements Buffer<T> {
 
     public RingBuffer(int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
+            throw new IllegalArgumentException();
         }
         setUpByOccupancy(createBuffer(capacity + 1), 0);
     }
