@@ -1,6 +1,7 @@
 package com.zhytnik.concurrency.buffer.impl;
 
 import com.zhytnik.concurrency.buffer.Buffer;
+import com.zhytnik.concurrency.buffer.FullBufferException;
 import org.junit.Test;
 
 /**
@@ -9,7 +10,7 @@ import org.junit.Test;
  */
 public class RingBufferTest extends DefaultRingBufferTest {
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = FullBufferException.class)
     public void checksFullState() {
         fillByCount(size + 1);
     }

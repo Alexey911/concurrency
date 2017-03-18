@@ -1,6 +1,8 @@
 package com.zhytnik.concurrency.buffer.impl;
 
 import com.zhytnik.concurrency.buffer.Buffer;
+import com.zhytnik.concurrency.buffer.EmptyBufferException;
+import com.zhytnik.concurrency.buffer.FullBufferException;
 
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.lang.String.format;
@@ -78,13 +80,13 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     private void checkTailIndex(int tail) {
         if (tail == headIndex) {
-            throw new RuntimeException("Overflow, there's no place!");
+            throw new FullBufferException();
         }
     }
 
     private void checkHeadIndex(int nextHeadIndex) {
         if (nextHeadIndex == tailIndex) {
-            throw new RuntimeException("Buffer is empty!");
+            throw new EmptyBufferException();
         }
     }
 

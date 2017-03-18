@@ -1,6 +1,8 @@
 package com.zhytnik.concurrency.buffer.impl;
 
 import com.zhytnik.concurrency.buffer.Buffer;
+import com.zhytnik.concurrency.buffer.EmptyBufferException;
+import com.zhytnik.concurrency.buffer.FullBufferException;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,6 +16,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     private final AtomicInteger headIndex;
     private final AtomicInteger tailIndex;
+
     private final AtomicInteger capacity;
 
     private final T[] buffer;
@@ -23,6 +26,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Minimal Buffer capacity is 1, was: " + capacity);
         }
+
         this.headIndex = new AtomicInteger(0);
         this.tailIndex = new AtomicInteger(1);
 
@@ -83,13 +87,13 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     private void checkTailIndex(int head, int tail) {
         if (head == tail) {
-            throw new RuntimeException("Overflow, there's no place!");
+            throw new FullBufferException();
         }
     }
 
     private void checkHeadIndex(int head, int nextTail) {
         if (nextTail == head) {
-            throw new RuntimeException("Buffer is empty!");
+            throw new EmptyBufferException();
         }
     }
 

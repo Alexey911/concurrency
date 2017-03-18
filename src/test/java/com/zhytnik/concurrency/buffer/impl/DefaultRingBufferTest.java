@@ -1,6 +1,7 @@
 package com.zhytnik.concurrency.buffer.impl;
 
 import com.zhytnik.concurrency.buffer.Buffer;
+import com.zhytnik.concurrency.buffer.EmptyBufferException;
 import org.junit.Test;
 
 import java.security.SecureRandom;
@@ -30,7 +31,7 @@ abstract class DefaultRingBufferTest {
         assertThat(buffer.pool()).isEqualTo(10);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = EmptyBufferException.class)
     public void checksEmptyState() {
         buffer.pool();
     }

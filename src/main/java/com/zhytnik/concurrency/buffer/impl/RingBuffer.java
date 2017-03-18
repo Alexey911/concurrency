@@ -1,6 +1,8 @@
 package com.zhytnik.concurrency.buffer.impl;
 
 import com.zhytnik.concurrency.buffer.Buffer;
+import com.zhytnik.concurrency.buffer.EmptyBufferException;
+import com.zhytnik.concurrency.buffer.FullBufferException;
 
 import static java.lang.String.format;
 
@@ -79,13 +81,13 @@ public class RingBuffer<T> implements Buffer<T> {
 
     private void checkHeadIndex() {
         if (isFull()) {
-            throw new RuntimeException("Overflow, there's no place!");
+            throw new FullBufferException();
         }
     }
 
     private void checkTailIndex(int nextTailIndex) {
         if (nextTailIndex == headIndex) {
-            throw new RuntimeException("Buffer is empty!");
+            throw new EmptyBufferException();
         }
     }
 
