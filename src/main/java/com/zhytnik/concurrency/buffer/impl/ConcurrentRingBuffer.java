@@ -23,9 +23,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
     private final int bufferSize;
 
     public ConcurrentRingBuffer(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException();
-        }
+        if (capacity <= 0) throw new IllegalArgumentException();
 
         this.headIndex = new AtomicInteger(0);
         this.tailIndex = new AtomicInteger(1);
@@ -40,6 +38,7 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
     public void add(T value) {
         final int index = tailIndex.getAndUpdate(this::incrementTail);
         capacity.incrementAndGet();
+
         buffer[index] = value;
     }
 
@@ -47,21 +46,23 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
     public T pool() {
         final int index = headIndex.updateAndGet(this::incrementHead);
         capacity.decrementAndGet();
+
         final T value = buffer[index];
         buffer[index] = null;
+
         return value;
     }
 
     private int incrementTail(int tail) {
         int head = headIndex.get();
-        checkTailIndex(tail, head);
+        checkWriteTo(tail, head);
         return index(tail + 1);
     }
 
     private int incrementHead(int head) {
         int tail = tailIndex.get();
         int next = index(head + 1);
-        checkHeadIndex(tail, next);
+        checkReadFrom(next, tail);
         return next;
     }
 
@@ -82,17 +83,17 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
 
     @Override
     public boolean isFull() {
-        return tailIndex.get() == headIndex.get();
+        return capacity.get() == getSize();
     }
 
-    private void checkTailIndex(int head, int tail) {
-        if (head == tail) {
+    private void checkWriteTo(int index, int head) {
+        if (index == head) {
             throw new FullBufferException();
         }
     }
 
-    private void checkHeadIndex(int head, int nextTail) {
-        if (nextTail == head) {
+    private void checkReadFrom(int index, int tail) {
+        if (index == tail) {
             throw new EmptyBufferException();
         }
     }
