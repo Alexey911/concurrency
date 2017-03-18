@@ -26,8 +26,8 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
         }
 
         this.capacity = 0;
-        this.tailIndex = 0;
-        this.headIndex = 1;
+        this.headIndex = 0;
+        this.tailIndex = 1;
 
         final int size = getBufferSize(capacity + 1);
         this.mask = size - 1;
@@ -36,9 +36,9 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     @Override
     public void add(T value) {
-        final int index = headIndex;
-        checkHeadIndex(index);
-        headIndex = index(index + 1);
+        final int index = tailIndex;
+        checkTailIndex(index);
+        tailIndex = index(index + 1);
 
         buffer[index] = value;
         ++capacity;
@@ -46,9 +46,9 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     @Override
     public T pool() {
-        final int index = index(tailIndex + 1);
-        checkTailIndex(index);
-        tailIndex = index;
+        final int index = index(headIndex + 1);
+        checkHeadIndex(index);
+        headIndex = index;
 
         final T value = buffer[index];
         buffer[index] = null;
@@ -73,17 +73,17 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     @Override
     public boolean isFull() {
-        return headIndex == tailIndex;
+        return tailIndex == headIndex;
     }
 
-    private void checkHeadIndex(int head) {
-        if (head == tailIndex) {
+    private void checkTailIndex(int tail) {
+        if (tail == headIndex) {
             throw new RuntimeException("Overflow, there's no place!");
         }
     }
 
-    private void checkTailIndex(int nextTailIndex) {
-        if (nextTailIndex == headIndex) {
+    private void checkHeadIndex(int nextHeadIndex) {
+        if (nextHeadIndex == tailIndex) {
             throw new RuntimeException("Buffer is empty!");
         }
     }
