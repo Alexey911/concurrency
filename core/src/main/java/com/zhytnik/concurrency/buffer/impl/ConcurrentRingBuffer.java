@@ -13,13 +13,13 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 20-Nov-16
  */
-public final class ConcurrentRingBuffer<T> implements Buffer<T> {
+public class ConcurrentRingBuffer<T> implements Buffer<T> {
 
-    private static final int NONE = 0;
-    private static final int WRITE = 1;
-    private static final int READ = 2;
+    protected static final int NONE = 0;
+    protected static final int WRITE = 1;
+    protected static final int READ = 2;
 
-    private final AtomicInteger state;
+    protected final AtomicInteger state;
 
     private int head;
     private int tail;
@@ -70,13 +70,13 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
         return buffer[index];
     }
 
-    private void lockFor(int action) {
+    protected void lockFor(int action) {
         //noinspection StatementWithEmptyBody
         while (!state.compareAndSet(NONE, action)) {
         }
     }
 
-    private void unlock() {
+    protected void unlock() {
         state.set(NONE);
     }
 
@@ -104,8 +104,15 @@ public final class ConcurrentRingBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public void clear() {
+    public void reset() {
+        lockFor(WRITE);
+
+        head = 0;
+        tail = 1;
+        capacity = 0;
         Arrays.fill(buffer, null);
+
+        unlock();
     }
 
     @Override

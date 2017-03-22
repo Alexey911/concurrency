@@ -19,7 +19,7 @@ public class ReadWriteGeneratorTest {
     public void generatesRightReadWriteSequence() {
         int writes = 0;
 
-        final boolean[] actions = generator.generate(size, 100_000);
+        final boolean[] actions = generator.generate(size, 1_000);
 
         for (boolean action : actions) {
             if (isWrite(action)) {

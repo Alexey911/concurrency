@@ -18,5 +18,5 @@ public interface Buffer<T> {
 
     boolean isEmpty();
 
-    void clear();
+    void reset();
 }

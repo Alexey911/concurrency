@@ -20,9 +20,17 @@ abstract class DefaultRingBufferTest {
 
     Buffer<Integer> buffer = getBuffer(size);
 
+    @Test(expected = IllegalArgumentException.class)
+    public void failsOnSmallerThanOneCapacities() {
+        getBuffer(0);
+    }
+
     @Test
     public void adds() {
+        assertThat(buffer.isEmpty()).isTrue();
+
         buffer.add(5);
+
         assertThat(buffer.isEmpty()).isFalse();
     }
 
@@ -33,56 +41,46 @@ abstract class DefaultRingBufferTest {
     }
 
     @Test(expected = EmptyBufferException.class)
-    public void checksEmptyState() {
+    public void failsOnEmptyReading() {
         buffer.pool();
     }
 
-    @Test
-    public void worksWithFewElements() {
-        buffer.add(10);
-        buffer.add(15);
-
-        assertThat(buffer.pool()).isEqualTo(10);
-        assertThat(buffer.pool()).isEqualTo(15);
-    }
-
-    @Test
-    public void worksWithMaxSize() {
-        fillByCount(size);
-        poolByCount(size);
-    }
-
-    @Test
-    public void getsEmpty() {
-        assertThat(buffer.isEmpty()).isTrue();
-    }
-
-    @Test
-    public void getsFull() {
-        fillByCount(size);
-        assertThat(buffer.isFull()).isTrue();
+    @Test(expected = FullBufferException.class)
+    public void failsOWriteToFull() {
+        fillByCount(size + 1);
     }
 
     @Test
     public void getsCapacity() {
         for (int i = 0; i < size; i++) {
             assertThat(buffer.getCapacity()).isEqualTo(i);
-            buffer.add(i);
+            buffer.add(0);
         }
     }
 
-    @Test(expected = FullBufferException.class)
+    @Test
     public void checksFullState() {
-        fillByCount(size + 1);
+        assertThat(buffer.isFull()).isFalse();
+
+        fillByCount(size);
+
+        assertThat(buffer.isFull()).isTrue();
+    }
+
+    @Test(expected = EmptyBufferException.class)
+    public void resets() {
+        fillByCount(size);
+        buffer.reset();
+
+        buffer.pool();
     }
 
     @Test
-    public void supportsFewReadWriteCycles() {
-        fillByCount(size);
-        poolByCount(size);
+    public void indicatesStateAndCapacity() {
+        buffer.add(3);
+        buffer.add(2);
 
-        fillByCount(size);
-        poolByCount(size);
+        assertThat(buffer.toString()).isEqualTo("Buffer[capacity=2, size=3]");
     }
 
     @Test
@@ -118,21 +116,21 @@ abstract class DefaultRingBufferTest {
     }
 
     @Test
-    public void stressTest() {
+    public void supportsManyReadWriteCycles() {
         Random random = new SecureRandom();
 
-        int count = 20_000;
+        int count = 1_000;
         int[] from = random.ints(count).toArray();
         int[] to = new int[count];
 
-        int x = 0, y = 0, size = 0;
+        int writes = 0, reads = 0, size = 0;
 
-        while (y < count) {
-            if (random.nextBoolean() && size > 0 || x == count) {
-                to[y++] = buffer.pool();
+        while (reads < count) {
+            if (random.nextBoolean() && size > 0 || writes == count) {
+                to[reads++] = buffer.pool();
                 size--;
-            } else if (x < count && size < this.size) {
-                buffer.add(from[x++]);
+            } else if (writes < count && size < this.size) {
+                buffer.add(from[writes++]);
                 size++;
             }
         }

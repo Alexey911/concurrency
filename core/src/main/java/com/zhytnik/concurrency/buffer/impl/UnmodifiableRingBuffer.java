@@ -12,7 +12,7 @@ import static java.lang.String.format;
  * @author Alexey Zhytnik
  * @since 21-Nov-16
  */
-public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
+public class UnmodifiableRingBuffer<T> implements Buffer<T> {
 
     private int head;
     private int tail;
@@ -75,7 +75,11 @@ public final class UnmodifiableRingBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public void clear() {
+    public void reset() {
+        head = 0;
+        tail = 1;
+        capacity = 0;
+
         Arrays.fill(buffer, null);
     }
 

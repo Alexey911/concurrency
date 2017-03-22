@@ -31,6 +31,11 @@
             <version>3.2.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -41,11 +46,8 @@
                 <version>${pitest.version}</version>
                 <configuration>
                     <targetClasses>
-                        <param>com.zhytnik.concurrency.buffer*</param>
+                        <param>com.zhytnik.concurrency.buffer.impl*</param>
                     </targetClasses>
-                    <targetTests>
-                        <param>com.zhytnik.experimental.buffer*</param>
-                    </targetTests>
                 </configuration>
             </plugin>
         </plugins>
